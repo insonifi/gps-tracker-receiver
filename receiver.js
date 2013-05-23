@@ -3,7 +3,7 @@ var net = require('net'),
 	colors = require('colors'),
 	EventEmitter = require('events').EventEmitter,
 	state = new EventEmitter,
-	socket = io.connect('127.0.0.1:80', {
+	socket = io.connect(process.argv != undefined ? process.argv[2] + ':80' :'127.0.0.1:80', {
 	  'reconnect': true,
 	  'reconnection delay': 30,
 	  'max reconnection attempts': 1000
