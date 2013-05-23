@@ -1,0 +1,11 @@
+[Unit]
+Description=GPS Tracker receiver node
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=/usr/bin/node /var/gps-tracker-receiver/receiver.js
+ExecStop=kill -n SIGINT $(pidof node)
+
+[Install]
+WantedBy=multi-user.target

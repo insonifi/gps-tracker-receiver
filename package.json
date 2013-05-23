@@ -1,0 +1,11 @@
+{
+  "name": "gps-tracker-trackdata-receiver",
+  "description": "Receive trackdata fed by mobile GPS module",
+  "version": "0.0.1",
+  "author": "Andrey Panteleyev",
+  "dependencies": {
+    "colors": "",
+    "socket.io-client": ""
+  },
+  "devDependencies": {}
+}
