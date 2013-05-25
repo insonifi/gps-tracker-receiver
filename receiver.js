@@ -3,7 +3,7 @@ var net = require('net'),
 	colors = require('colors'),
 	EventEmitter = require('events').EventEmitter,
 	state = new EventEmitter,
-	socket = io.connect(process.argv != undefined ? process.argv[2] + ':80' :'127.0.0.1:80', {
+	socket = io.connect(/:/.test(process.argv[2]) ? process.argv[2] :'127.0.0.1:80', {
 	  'reconnect': true,
 	  'reconnection delay': 30,
 	  'max reconnection attempts': 1000
@@ -19,8 +19,6 @@ socket.on('connect', function(socket) {
 	})
 	
 	state.connected = true;
-
-	console.log(socket);
 	
 	function flush_queue() {
 		var queue_length = state.queue.length;
@@ -34,7 +32,6 @@ socket.on('connect', function(socket) {
 	}
 
 	state.on('message', function (message) {
-		debugger;
 		state.socket.emit('gps-message', message);
 		console.log('[GPS]'.grey, 'sent to server');
 	});
