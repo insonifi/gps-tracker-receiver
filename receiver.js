@@ -3,7 +3,8 @@ var net = require('net'),
 	colors = require('colors'),
 	EventEmitter = require('events').EventEmitter,
 	state = new EventEmitter,
-	socket = io.connect(/:/.test(process.argv[2]) ? process.argv[2] :'127.0.0.1:80', {
+	conf = require('./conf'),
+	socket = io.connect(conf == undefined ? '127.0.0.1:80' : conf.socket, {
 	  'reconnect': true,
 	  'reconnection delay': 120,
 	  'max reconnection attempts': 10000
@@ -11,6 +12,7 @@ var net = require('net'),
 
 state.connected = false;
 state.queue = [];
+state.socket = null;
 
 socket.on('connect', function(socket) {
 	state.socket = socket;
