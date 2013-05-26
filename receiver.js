@@ -13,18 +13,17 @@ var net = require('net'),
 state.connected = false;
 state.queue = [];
 
-socket.on('connect', function(socket) {
-	var global_socket = socket;
-	global_socket.emit('handshake', {welcome: 'GPS Receiver'});
+socket.on('connect', function() {
+	socket.emit('handshake', {welcome: 'GPS Receiver'});
 	state.connected = true;
 	
-	global_socket.on('hanshake', function (message) {
+	socket.on('hanshake', function (message) {
 		console.log('[proxy]'.grey, 'connected to '.green, message.welcome);
 	});
 	function flush_queue() {
 		var queue_length = state.queue.length;
 			for (var i = 0; i < queue_length; i++) {
-				global_socket.emit('gps-message', state.queue.pop());
+				socket.emit('gps-message', state.queue.pop());
 			}
 		console.log('[proxy]'.grey, 'flushed queue:', queue_length);
 	}
@@ -32,11 +31,11 @@ socket.on('connect', function(socket) {
 		flush_queue();
 	}
 
-	global_socket.on('message', function (message) {
+	socket.on('message', function (message) {
 		global_socket.emit('gps-message', message);
 		console.log('[GPS]'.grey, 'sent to server');
 	});
-	global_socket.on('disconnect', function(socket) {
+	socket.on('disconnect', function(socket) {
 		console.log('[proxy]'.grey, 'disconnected from server'.red);
 		state.connected = false;
 	});
