@@ -5,8 +5,8 @@ var net = require('net'),
 	state = new EventEmitter,
 	socket = io.connect(/:/.test(process.argv[2]) ? process.argv[2] :'127.0.0.1:80', {
 	  'reconnect': true,
-	  'reconnection delay': 30,
-	  'max reconnection attempts': 1000
+	  'reconnection delay': 120,
+	  'max reconnection attempts': 10000
 	});
 
 state.connected = false;
@@ -37,7 +37,7 @@ socket.on('connect', function(socket) {
 	});
 });
 socket.on('disconnect', function(socket) {
-	console.log('[proxy]'.grey, 'disconnected to server'.red);
+	console.log('[proxy]'.grey, 'disconnected from server'.red);
 	state.connected = false;
 });
 
