@@ -13,10 +13,13 @@ var net = require('net'),
 state.connected = false;
 state.queue = [];
 
-socket.on('connect', function() {
+socket.on('connection', function() {
 	socket.emit('handshake', {welcome: 'GPS Receiver'});
 	state.connected = true;
 	
+	socket.on('hanshake', function (message) {
+		console.log('[proxy]'.grey, 'connected to '.green, message.welcome);
+	});
 	function flush_queue() {
 		var queue_length = state.queue.length;
 			for (var i = 0; i < queue_length; i++) {
@@ -32,15 +35,11 @@ socket.on('connect', function() {
 		socket.emit('gps-message', message);
 		console.log('[GPS]'.grey, 'sent to server');
 	});
+	socket.on('disconnect', function(socket) {
+		console.log('[proxy]'.grey, 'disconnected from server'.red);
+		state.connected = false;
+	});
 });
-socket.on('hanshake', function (message) {
-	console.log('[proxy]'.grey, 'connected to '.green, message.welcome);
-});
-socket.on('disconnect', function(socket) {
-	console.log('[proxy]'.grey, 'disconnected from server'.red);
-	state.connected = false;
-});
-
 /*************************** Track data receiver ******************************/					
 var serverGPS = net.createServer(function(c) { //'connection' listener
 	console.log('[GPS]'.grey, 'Connection established');
