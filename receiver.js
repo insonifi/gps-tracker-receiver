@@ -13,7 +13,7 @@ var net = require('net'),
 state.connected = false;
 state.queue = [];
 
-socket.on('connection', function(socket) {
+socket.on('connect', function(socket) {
 	var global_socket = socket;
 	global_socket.emit('handshake', {welcome: 'GPS Receiver'});
 	state.connected = true;
