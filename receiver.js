@@ -14,16 +14,17 @@ state.connected = false;
 state.queue = [];
 
 socket.on('connection', function(socket) {
-	socket.emit('handshake', {welcome: 'GPS Receiver'});
+	var global_socket = socket;
+	global_socket.emit('handshake', {welcome: 'GPS Receiver'});
 	state.connected = true;
 	
-	socket.on('hanshake', function (message) {
+	global_socket.on('hanshake', function (message) {
 		console.log('[proxy]'.grey, 'connected to '.green, message.welcome);
 	});
 	function flush_queue() {
 		var queue_length = state.queue.length;
 			for (var i = 0; i < queue_length; i++) {
-				socket.emit('gps-message', state.queue.pop());
+				global_socket.emit('gps-message', state.queue.pop());
 			}
 		console.log('[proxy]'.grey, 'flushed queue:', queue_length);
 	}
@@ -31,11 +32,11 @@ socket.on('connection', function(socket) {
 		flush_queue();
 	}
 
-	socket.on('message', function (message) {
-		socket.emit('gps-message', message);
+	global_socket.on('message', function (message) {
+		global_socket.emit('gps-message', message);
 		console.log('[GPS]'.grey, 'sent to server');
 	});
-	socket.on('disconnect', function(socket) {
+	global_socket.on('disconnect', function(socket) {
 		console.log('[proxy]'.grey, 'disconnected from server'.red);
 		state.connected = false;
 	});
