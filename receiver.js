@@ -31,8 +31,8 @@ socket.on('connect', function() {
 		flush_queue();
 	}
 
-	socket.on('message', function (message) {
-		global_socket.emit('gps-message', message);
+	state.on('message', function (message) {
+		socket.emit('gps-message', message);
 		console.log('[GPS]'.grey, 'sent to server');
 	});
 	socket.on('disconnect', function(socket) {
