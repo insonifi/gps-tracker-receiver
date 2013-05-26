@@ -17,7 +17,7 @@ socket.on('connect', function() {
 	socket.emit('handshake', {welcome: 'GPS Receiver'});
 	state.connected = true;
 	
-	socket.on('hanshake', function (message) {
+	socket.on('handshake', function (message) {
 		console.log('[proxy]'.grey, 'connected to '.green, message.welcome);
 	});
 	function flush_queue() {
