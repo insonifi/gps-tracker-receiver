@@ -45,6 +45,7 @@ socket.on('connect', function() {
 	socket.on('disconnect', function(socket) {
 		console.log('[proxy]'.grey, 'disconnected from server'.red);
 		state.connected = false;
+		delete socket_session[this.id];
 	});
 });
 /*************************** Track data receiver ******************************/					
