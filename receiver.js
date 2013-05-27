@@ -18,6 +18,8 @@ socket.on('connect', function() {
 	if (socket.id in socket_session) {
 		return
 	}
+	socket_session[socket.id] = socket;
+	
 	socket.emit('handshake', {welcome: 'GPS Receiver'});
 	state.connected = true;
 	
