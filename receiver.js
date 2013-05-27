@@ -14,6 +14,9 @@ state.connected = false;
 state.queue = [];
 
 socket.on('connect', function() {
+	if (socket.id in socket_session) {
+		return
+	}
 	socket.emit('handshake', {welcome: 'GPS Receiver'});
 	state.connected = true;
 	
