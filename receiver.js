@@ -3,6 +3,7 @@ var net = require('net'),
 	colors = require('colors'),
 	EventEmitter = require('events').EventEmitter,
 	state = new EventEmitter,
+	socket_session = {},
 	conf = require('./conf'),
 	socket = io.connect(conf == undefined ? '127.0.0.1:80' : conf.socket, {
 	  'reconnect': true,
