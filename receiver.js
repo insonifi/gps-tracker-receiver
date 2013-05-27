@@ -22,9 +22,10 @@ socket.on('connect', function() {
 	});
 	function flush_queue() {
 		var queue_length = state.queue.length;
-			for (var i = 0; i < queue_length; i++) {
-				socket.emit('gps-message', state.queue.pop());
-			}
+		for (var i = 0; i < queue_length; i++) {
+			socket.emit('gps-message', state.queue[i]);
+		}
+		state.queue = []	
 		console.log('[proxy]'.grey, 'flushed queue:', queue_length);
 	}
 	if (state.queue.length > 0) {
