@@ -11,42 +11,37 @@ var net = require('net'),
 	  'max reconnection attempts': 10000
 	});
 
+flush_queue = function () {
+	var queue_length = state.queue.length;
+	for (var i = 0; i < queue_length; i++) {
+		socket.emit('gps-message', state.queue[i]);
+	}
+	state.queue = []	
+	console.log('[proxy]'.grey, 'flushed queue:', queue_length);
+}
+
 state.connected = false;
 state.queue = [];
 
 socket.on('connect', function() {
-	if (socket.id in socket_session) {
-		return
-	}
-	socket_session[socket.id] = socket;
-	
 	socket.emit('handshake', {welcome: 'GPS Receiver'});
 	state.connected = true;
-	
-	socket.on('handshake', function (message) {
-		console.log('[proxy]'.grey, 'connected to '.green, message.welcome);
-	});
-	function flush_queue() {
-		var queue_length = state.queue.length;
-		for (var i = 0; i < queue_length; i++) {
-			socket.emit('gps-message', state.queue[i]);
-		}
-		state.queue = []	
-		console.log('[proxy]'.grey, 'flushed queue:', queue_length);
-	}
 	if (state.queue.length > 0) {
 		flush_queue();
 	}
+});
 
-	state.on('message', function (message) {
-		socket.emit('gps-message', message);
-		console.log('[GPS]'.grey, 'sent to server');
-	});
-	socket.on('disconnect', function(socket) {
-		console.log('[proxy]'.grey, 'disconnected from server'.red);
-		state.connected = false;
-		delete socket_session[this.id];
-	});
+socket.on('handshake', function (message) {
+	console.log('[proxy]'.grey, 'connected to '.green, message.welcome);
+});
+
+state.on('message', function (message) {
+	socket.emit('gps-message', message);
+	console.log('[GPS]'.grey, 'sent to server');
+});
+socket.on('disconnect', function(socket) {
+	console.log('[proxy]'.grey, 'disconnected from server'.red);
+	state.connected = false;
 });
 /*************************** Track data receiver ******************************/					
 var serverGPS = net.createServer(function(c) { //'connection' listener
