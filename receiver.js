@@ -2,8 +2,7 @@ var net = require('net'),
 	io = require('socket.io-client'),
 	colors = require('colors'),
 	EventEmitter = require('events').EventEmitter,
-	state = new EventEmitter,
-	socket_session = {},
+	state = {},
 	conf = require('./conf'),
 	socket = io.connect(conf == undefined ? '127.0.0.1:80' : conf.socket, {
 	  'reconnect': true,
@@ -36,8 +35,7 @@ socket.on('handshake', function (message) {
 });
 
 state.on('message', function (message) {
-	socket.emit('gps-message', message);
-	console.log('[GPS]'.grey, 'sent to server');
+	
 });
 socket.on('disconnect', function(socket) {
 	console.log('[proxy]'.grey, 'disconnected from server'.red);
@@ -78,7 +76,8 @@ var serverGPS = net.createServer(function(c) { //'connection' listener
 			if (line[0] == '$') {
 				//queue.add(vId + line); //add to parse queue
 				if (state.connected) {
-					state.emit('message', vId + line);
+					socket.emit('gps-message',  vId + line);
+					console.log('[GPS]'.grey, 'sent to server');
 				} else {
 					console.log('[GPS]'.grey, 'put on queue');
 					state.queue.push(vId + line);
