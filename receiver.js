@@ -87,5 +87,12 @@ var serverGPS = net.createServer(function(c) { //'connection' listener
 	});
 });
 serverGPS.listen(process.env.VCAP_APP_PORT || 920, function() { //'listening' listener
-  console.log('[GPS]'.grey, 'Receiver listening'.green);
+	console.log('[GPS]'.grey, 'Receiver listening'.green);
+})
+serverGPS.on('error', function (err) {
+	if (err.code == 'EACCES') {
+		console.log('[GPS]'.grey, 'not allowed to listen on port'.red);
+	} else {
+		console.log('[GPS]'.grey, err.toString().red);
+	}
 });
