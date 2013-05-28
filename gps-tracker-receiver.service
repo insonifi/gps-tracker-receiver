@@ -3,7 +3,10 @@ Description=GPS Tracker receiver node
 
 [Service]
 Type=simple
+StartLimitInterval=10s
+StartLimitBurst=2
 Restart=always
+RestartSec=5s
 ExecStart=/usr/bin/node /var/gps-tracker-receiver/receiver.js
 ExecStop=kill -n SIGINT $(pidof node)
 
