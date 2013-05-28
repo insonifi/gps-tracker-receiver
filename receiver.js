@@ -34,9 +34,6 @@ socket.on('handshake', function (message) {
 	console.log('[proxy]'.grey, 'connected to '.green, message.welcome);
 });
 
-state.on('message', function (message) {
-	
-});
 socket.on('disconnect', function(socket) {
 	console.log('[proxy]'.grey, 'disconnected from server'.red);
 	state.connected = false;
