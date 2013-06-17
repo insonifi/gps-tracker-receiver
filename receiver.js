@@ -22,8 +22,8 @@ var net = require('net'),
 		console.log('[proxy]'.grey, 'flushed queue:', queue_length);
 	},
 	/*************************** Track data receiver ******************************/
-	serverGPS = net.createServer(function (socket) { //'connection' listener
-		c = socket;
+	serverGPS = net.createServer(function (module_socket) { //'connection' listener
+		c = module_socket;
 		console.log('[GPS]'.grey, 'Connection established');
 		c.on('end', function () {
 			console.log('[GPS]'.grey, module_id, 'disconnected'.grey);
