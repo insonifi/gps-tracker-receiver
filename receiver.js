@@ -29,9 +29,9 @@ var net = require('net'),
 			console.log('[GPS]'.grey, module_id, 'disconnected'.grey);
 			module_id = null;
 		});
-		c.on('error', function(err {
+		c.on('error', function (err) {
 			console.error('[GPS]'.grey, err.red);
-		}
+		});
 		c.write('GpsTsc v3.2.15\r\n'); //greet client
 		c.on('data', function (chunk) {
 			var string = chunk.toString(),
