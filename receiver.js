@@ -4,6 +4,7 @@ var net = require('net'),
 	colors = require('colors'),
 	EventEmitter = require('events').EventEmitter,
 	i,
+	c,
 	module_id,
 	state = {},
 	conf = require('./conf'),
@@ -21,12 +22,16 @@ var net = require('net'),
 		console.log('[proxy]'.grey, 'flushed queue:', queue_length);
 	},
 	/*************************** Track data receiver ******************************/
-	serverGPS = net.createServer(function (c) { //'connection' listener
+	serverGPS = net.createServer(function (socket) { //'connection' listener
+		c = socket;
 		console.log('[GPS]'.grey, 'Connection established');
 		c.on('end', function () {
 			console.log('[GPS]'.grey, module_id, 'disconnected'.grey);
 			module_id = null;
 		});
+		c.on('error', function(err {
+			console.error('[GPS]'.grey, err.red);
+		}
 		c.write('GpsTsc v3.2.15\r\n'); //greet client
 		c.on('data', function (chunk) {
 			var string = chunk.toString(),
@@ -90,9 +95,10 @@ socket.on('disconnect', function (socket) {
 	state.connected = false;
 });
 
-serverGPS.listen(process.env.VCAP_APP_PORT || 920, function () { //'listening' listener
+serverGPS.listen(920, function () { //'listening' listener
 	console.log('[GPS]'.grey, 'Receiver listening'.green);
 });
+
 serverGPS.on('error', function (err) {
 	if (err.code === 'EACCES') {
 		console.log('[GPS]'.grey, 'not allowed to listen on port'.red);
