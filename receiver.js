@@ -5,7 +5,6 @@ var net = require('net'),
 	EventEmitter = require('events').EventEmitter,
 	i,
 	c,
-	module_id,
 	state = {},
 	conf = require('./conf'),
 	socket = io.connect(conf.socket === undefined ? '127.0.0.1:8000' : conf.socket, {
@@ -23,7 +22,8 @@ var net = require('net'),
 	},
 	/*************************** Track data receiver ******************************/
 	serverGPS = net.createServer(function (module_socket) { //'connection' listener
-		c = module_socket;
+		var module_id,
+			c = module_socket;
 		console.log('[GPS]'.grey, 'Connection established');
 		c.on('end', function () {
 			console.log('[GPS]'.grey, module_id, 'disconnected'.grey);
