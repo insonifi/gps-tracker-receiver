@@ -4,7 +4,11 @@ var net = require('net'),
     imq = new iron_mq.Client(),
     queue = imq.queue('gps-message'),
 	colors = require('colors'),
-	EventEmitter = require('events').EventEmitter,
+	queue_err = function (err, body) {
+        if (err) {
+            console.log('[IronMQ]'.grey, err, body);
+        }
+	},
 	i,
 	c,
 	/*************************** Track data receiver ******************************/
@@ -27,7 +31,7 @@ var net = require('net'),
 			for (i = 0; i < lines.length; i += 1) {
 				line = lines[i];
 				if (line[0] === '$') {
-					queue.post(module_id + line);
+					queue.post(module_id + line, queue_err);
 					console.log('[GPS]'.grey, 'posted to queue');
 					console.log('[GPS]'.grey, module_id, line);
 					continue;
