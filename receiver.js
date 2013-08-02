@@ -1,25 +1,12 @@
 'use strict';
 var net = require('net'),
-	io = require('socket.io-client'),
+	iron_mq = require('iron_mq'),
+    imq = new iron_mq.Client(),
+    queue = imq.queue('gps-message'),
 	colors = require('colors'),
 	EventEmitter = require('events').EventEmitter,
 	i,
 	c,
-	state = {},
-	conf = require('./conf'),
-	socket = io.connect(conf.socket === undefined ? '127.0.0.1:8000' : conf.socket, {
-		'reconnect': true,
-		'reconnection delay': 120,
-		'max reconnection attempts': 10000
-	}),
-	flush_queue = function () {
-		var queue_length = state.queue.length;
-		for (i = 0; i < queue_length; i += 1) {
-			socket.emit('gps-message', state.queue[i]);
-		}
-		state.queue = [];
-		console.log('[proxy]'.grey, 'flushed queue:', queue_length);
-	},
 	/*************************** Track data receiver ******************************/
 	serverGPS = net.createServer(function (module_socket) { //'connection' listener
 		var module_id,
@@ -39,16 +26,9 @@ var net = require('net'),
 				line;
 			for (i = 0; i < lines.length; i += 1) {
 				line = lines[i];
-				//console.info('> %s', line);
 				if (line[0] === '$') {
-					//queue.add(module_id + line); //add to parse queue
-					if (state.connected) {
-						socket.emit('gps-message',  module_id + line);
-						console.log('[GPS]'.grey, 'sent to server');
-					} else {
-						console.log('[GPS]'.grey, 'put on queue');
-						state.queue.push(module_id + line);
-					}
+					queue.post(module_id + line);
+					console.log('[GPS]'.grey, 'posted to queue');
 					console.log('[GPS]'.grey, module_id, line);
 					continue;
 				}
@@ -74,26 +54,6 @@ var net = require('net'),
 			c.write('0\r\n'); //respond back
 		});
 	});
-
-state.connected = false;
-state.queue = [];
-
-socket.on('connect', function () {
-	socket.emit('handshake', {welcome: 'GPS Receiver'});
-	state.connected = true;
-	if (state.queue.length > 0) {
-		flush_queue();
-	}
-});
-
-socket.on('handshake', function (message) {
-	console.log('[proxy]'.grey, 'connected to '.green, message.welcome);
-});
-
-socket.on('disconnect', function (socket) {
-	console.log('[proxy]'.grey, 'disconnected from server'.red);
-	state.connected = false;
-});
 
 serverGPS.listen(920, function () { //'listening' listener
 	console.log('[GPS]'.grey, 'Receiver listening'.green);

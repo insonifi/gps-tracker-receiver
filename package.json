@@ -1,11 +1,11 @@
 {
-  "name": "gps-tracker-trackdata-receiver",
-  "description": "Receive trackdata fed by mobile GPS module",
-  "version": "0.0.1",
+  "name": "gps-tracker-receiver",
+  "description": "Receive trackdata fed by mobile GPS module and post to IronMQ",
+  "version": "0.0.2",
   "author": "Andrey Panteleyev",
   "dependencies": {
     "colors": "",
-    "socket.io-client": ""
+    "iron_mq": ""
   },
   "devDependencies": {}
 }
