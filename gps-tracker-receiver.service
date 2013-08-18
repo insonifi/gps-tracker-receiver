@@ -4,6 +4,7 @@ Description=GPS Tracker receiver node
 [Service]
 Type=simple
 Restart=always
+ExecStartPre=/var/gps-tracker-receiver/iron.sh
 ExecStart=/usr/bin/node /var/gps-tracker-receiver/receiver.js
 ExecStop=kill -n SIGINT $(pidof node)
 
