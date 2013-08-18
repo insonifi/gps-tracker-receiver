@@ -2,7 +2,7 @@
 var net = require('net'),
 	iron_mq = require('iron_mq'),
     imq = new iron_mq.Client(),
-    queue = imq.queue('gps-message'),
+    queue = imq.queue('gps-messages'),
 	colors = require('colors'),
 	queue_err = function (err, body) {
         if (err) {
