@@ -11,6 +11,7 @@ Installation
 *  Create file for IronMQ authorization:
   ```
   IRON_TOKEN=...
+
   IRON_PROJECT_ID=...
   ```
 *  Copy systemd service script to `/etc/systemd/system/`
