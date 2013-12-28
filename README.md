@@ -9,11 +9,10 @@ Installation
 *  Install IronMQ module, using *npm* package manager:
   `npm install`
 *  Create file for IronMQ authorization:
-  
-  > IRON_TOKEN=...
-
-  > IRON_PROJECT_ID=...
-
+  ```
+  IRON_TOKEN=...
+  IRON_PROJECT_ID=...
+  ```
 *  Copy systemd service script to `/etc/systemd/system/`
 *  Enable and start service
 
